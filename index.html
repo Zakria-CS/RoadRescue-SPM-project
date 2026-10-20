@@ -1,165 +1,422 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RoadRescue | Roadside Assistance</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoadRescue | Your Roadside Partner</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header>
-  <a href="#" class="logo">🚘 RoadRescue</a>
-  <nav>
-    <a href="#home" onclick="showHome()">Home</a>
-    <a href="#services" onclick="showHome()">Services</a>
-    <a href="#about" onclick="showHome()">About</a>
-    <button onclick="showAuth('login')">Login</button>
-    <button class="dark-btn" onclick="showAuth('signup')">Sign Up</button>
-  </nav>
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <span class="brand-logo">R</span>
+        <span>Road<span class="blue-text">Rescue</span></span>
+    </div>
+
+    <button class="close-menu" onclick="closeMenu()">✕</button>
+
+    <div class="menu-label">NAVIGATION</div>
+    <a href="#" onclick="goHome(); return false;">⌂ <span>Home</span></a>
+    <a href="#services" onclick="goHome(); closeMenu();">✦ <span>Services</span></a>
+    <a href="#about" onclick="goHome(); closeMenu();">ⓘ <span>About us</span></a>
+
+    <div class="sidebar-line"></div>
+
+    <div id="guestMenu">
+        <button class="menu-login" onclick="showLogin(); closeMenu()">Login</button>
+        <button class="menu-signup" onclick="showSignup(); closeMenu()">Create account ↗</button>
+    </div>
+
+    <div id="profileMenu" style="display:none">
+        <div class="profile-card">
+            <div class="avatar" id="sidebarAvatar">U</div>
+            <div class="profile-details">
+                <strong id="sidebarName">User</strong>
+                <span id="sidebarRole">Driver</span>
+            </div>
+            <span class="profile-online"></span>
+        </div>
+        <button class="profile-action" onclick="showDashboard(); closeMenu()">▦ &nbsp; My dashboard</button>
+        <button class="profile-action logout-action" onclick="logout()">↪ &nbsp; Logout</button>
+    </div>
+
+    <div class="sidebar-bottom">
+        <span class="online-dot"></span>
+        <div>
+            <strong>We're here to help</strong>
+            <small>Your journey matters.</small>
+        </div>
+    </div>
+</aside>
+
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+<!-- Header -->
+<header class="header">
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Open navigation">
+        <span></span><span></span><span></span>
+    </button>
+
+    <a href="#" class="header-brand" onclick="goHome(); return false;">
+        <span class="brand-logo">R</span>
+        <span>Road<span class="blue-text">Rescue</span></span>
+    </a>
 </header>
 
-<section id="home" class="hero">
-  <div class="hero-text">
-    <span class="tag">YOUR ROADSIDE PARTNER</span>
-    <h1>Help Is Just <span>One Click</span> Away!</h1>
-    <p>Car trouble? Flat tyre? Need a mechanic? RoadRescue helps drivers request roadside assistance easily.</p>
-    <button onclick="showAuth('signup')">Get Started →</button>
-    <a class="learn" href="#services">Explore Services</a>
-  </div>
-  <div class="hero-car">🚗</div>
+<!-- HOME PAGE -->
+<main id="homePage">
+    <section class="hero">
+        <div class="hero-copy">
+            <div class="hero-pill"><span class="online-dot"></span> YOUR TRUSTED ROAD PARTNER</div>
+            <h1>When the road<br>gets tough, <span>we've<br>got your back.</span></h1>
+            <p>Vehicle trouble? Don't let it ruin your day. Tell us what's wrong, get a mechanic's price, and get moving again.</p>
+
+            <div class="hero-actions">
+                <button class="btn btn-primary" onclick="startHelp()">Get roadside help <span>↗</span></button>
+                <a class="hero-link" href="#howItWorks">See how it works ↓</a>
+            </div>
+
+            <div class="hero-points">
+                <div><span class="check-circle">✓</span><span><strong>Clear price offers</strong><small>Review before accepting</small></span></div>
+                <div><span class="check-circle">✓</span><span><strong>Simple requests</strong><small>Designed for drivers</small></span></div>
+            </div>
+        </div>
+
+        <div class="hero-art">
+            <div class="art-glow"></div>
+            <div class="art-ring ring-one"></div>
+            <div class="art-ring ring-two"></div>
+
+            <div class="vehicle-showcase">
+                <div class="showcase-top">
+                    <span class="tiny-label"><span class="online-dot"></span> ROADRESCUE ASSIST</span>
+                    <span class="sparkle">✦</span>
+                </div>
+                <div class="big-car">🚙</div>
+                <div class="road-stripe"></div>
+                <div class="assist-notice">
+                    <div class="notice-icon">🔧</div>
+                    <div><strong>Need a mechanic?</strong><small>Help starts with one request.</small></div>
+                    <span class="notice-arrow">↗</span>
+                </div>
+            </div>
+
+            <div class="floating-chip chip-one">🛠️ <span>Mechanical help</span></div>
+            <div class="floating-chip chip-two">📍 <span>Your location</span></div>
+            <div class="decor-dot dot-one"></div>
+            <div class="decor-dot dot-two"></div>
+        </div>
+    </section>
+
+    <section class="stats-strip">
+        <div><strong>01</strong><span>Describe your issue</span></div>
+        <div><strong>02</strong><span>Review mechanic offers</span></div>
+        <div><strong>03</strong><span>Get back on the road</span></div>
+    </section>
+
+    <section class="section-block" id="services">
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow">WHAT WE CAN HELP WITH</span>
+                <h2>One platform. <span>Many solutions.</span></h2>
+            </div>
+            <p>From a flat tyre to an engine issue, create a request for the help your vehicle needs.</p>
+        </div>
+
+        <div class="service-grid">
+            <article class="service-card">
+                <div class="service-icon icon-blue">🔧</div>
+                <h3>Engine problems</h3>
+                <p>Get help with engine faults, overheating and unusual noises.</p>
+                <button onclick="startHelp()">Request help ↗</button>
+            </article>
+            <article class="service-card">
+                <div class="service-icon icon-orange">🛞</div>
+                <h3>Tyre & wheel</h3>
+                <p>Flat tyres, punctures and wheel-related trouble.</p>
+                <button onclick="startHelp()">Request help ↗</button>
+            </article>
+            <article class="service-card">
+                <div class="service-icon icon-green">🔋</div>
+                <h3>Battery & start</h3>
+                <p>Battery failure, starting trouble and electrical issues.</p>
+                <button onclick="startHelp()">Request help ↗</button>
+            </article>
+            <article class="service-card">
+                <div class="service-icon icon-purple">🛵</div>
+                <h3>Bike assistance</h3>
+                <p>Bike engine, chain, clutch and tyre problems.</p>
+                <button onclick="startHelp()">Request help ↗</button>
+            </article>
+        </div>
+    </section>
+
+    <section class="how-section" id="howItWorks">
+        <div class="section-heading centered-heading">
+            <div>
+                <span class="eyebrow">A BETTER WAY TO GET HELP</span>
+                <h2>Help in <span>three simple steps.</span></h2>
+            </div>
+        </div>
+        <div class="steps-grid">
+            <article class="step-card">
+                <span class="step-number">01</span>
+                <div class="step-emoji">📋</div>
+                <h3>Tell us about your vehicle</h3>
+                <p>Select your vehicle type, company, model and the problem you're facing.</p>
+            </article>
+            <article class="step-card">
+                <span class="step-number">02</span>
+                <div class="step-emoji">💬</div>
+                <h3>Review the mechanic's offer</h3>
+                <p>See the price before you accept or reject the offer.</p>
+            </article>
+            <article class="step-card">
+                <span class="step-number">03</span>
+                <div class="step-emoji">🚘</div>
+                <h3>Get back on the road</h3>
+                <p>Track your request status and review completed jobs in history.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="about-section" id="about">
+        <div class="about-badge">R</div>
+        <div class="about-copy">
+            <span class="eyebrow">ABOUT ROADRESCUE</span>
+            <h2>Less roadside stress.<br><span>More peace of mind.</span></h2>
+            <p>RoadRescue is a student project built to connect drivers and mechanics. Drivers can describe vehicle problems, review price offers, and manage their requests through one easy-to-use interface.</p>
+            <button class="btn btn-primary" onclick="startHelp()">Try RoadRescue ↗</button>
+        </div>
+    </section>
+
+    <section class="final-cta">
+        <span class="eyebrow">YOUR NEXT JOURNEY STARTS HERE</span>
+        <h2>Let's get you moving again.</h2>
+        <p>Create your account and keep roadside assistance simple.</p>
+        <button class="btn btn-light" onclick="showSignup()">Join RoadRescue ↗</button>
+    </section>
+</main>
+
+<!-- LOGIN -->
+<section id="loginPage" class="auth-page" style="display:none">
+    <div class="auth-art">
+        <div class="auth-art-logo">R</div>
+        <span class="eyebrow">WELCOME BACK</span>
+        <h2>Your road.<br>Your journey.</h2>
+        <p>Log in to manage your requests and continue your RoadRescue journey.</p>
+        <div class="auth-art-note">✦ &nbsp; Roadside support, made simple.</div>
+    </div>
+
+    <div class="auth-form-wrap">
+        <form class="auth-form" onsubmit="login(event)">
+            <span class="eyebrow">YOUR ACCOUNT</span>
+            <h2>Welcome back</h2>
+            <p class="form-subtitle">Enter your details to sign in.</p>
+
+            <label for="loginIdentity">Username or email</label>
+            <input id="loginIdentity" type="text" placeholder="Enter username or email" required>
+
+            <label for="loginPassword">Password</label>
+            <input id="loginPassword" type="password" placeholder="Enter your password" required>
+
+            <p id="loginMessage" class="form-message"></p>
+            <button class="btn btn-primary form-submit" type="submit">Login to your account ↗</button>
+            <p class="form-switch">New here? <a href="#" onclick="showSignup(); return false;">Create an account</a></p>
+            <button type="button" class="back-home" onclick="goHome()">← Back to home</button>
+        </form>
+    </div>
 </section>
 
-<section id="services" class="section">
-  <span class="tag">WHAT WE OFFER</span>
-  <h2>Our Services</h2>
-  <p class="sub">Reliable help for your journey.</p>
+<!-- SIGNUP -->
+<section id="signupPage" class="auth-page" style="display:none">
+    <div class="auth-art signup-art">
+        <div class="auth-art-logo">R</div>
+        <span class="eyebrow">JOIN OUR COMMUNITY</span>
+        <h2>Every journey<br>deserves support.</h2>
+        <p>Join as a driver who needs help or a mechanic ready to provide assistance.</p>
+        <div class="auth-art-note">✦ &nbsp; Create your RoadRescue account.</div>
+    </div>
 
-  <div class="cards">
-    <div class="card">
-      <span>🔧</span>
-      <h3>Engine Problems</h3>
-      <p>Find help when your vehicle stops working.</p>
+    <div class="auth-form-wrap">
+        <form class="auth-form" onsubmit="signup(event)">
+            <span class="eyebrow">GET STARTED</span>
+            <h2>Create your account</h2>
+            <p class="form-subtitle">Fill in your details below.</p>
+
+            <label for="fullName">Full name</label>
+            <input id="fullName" type="text" placeholder="Your full name" required>
+
+            <label for="username">Username</label>
+            <input id="username" type="text" placeholder="Choose a username" required>
+
+            <label for="email">Email address</label>
+            <input id="email" type="email" placeholder="you@example.com" required>
+
+            <label for="signupPassword">Password</label>
+            <input id="signupPassword" type="password" placeholder="Create a password" required>
+
+            <label for="role">I want to join as</label>
+            <select id="role" required>
+                <option value="Driver">🚘 Driver</option>
+                <option value="Mechanic">🔧 Mechanic</option>
+            </select>
+
+            <p id="signupMessage" class="form-message"></p>
+            <button class="btn btn-primary form-submit" type="submit">Create account ↗</button>
+            <p class="form-switch">Already registered? <a href="#" onclick="showLogin(); return false;">Login</a></p>
+            <button type="button" class="back-home" onclick="goHome()">← Back to home</button>
+        </form>
     </div>
-    <div class="card">
-      <span>🛞</span>
-      <h3>Flat Tyre</h3>
-      <p>Get assistance with tyre problems.</p>
-    </div>
-    <div class="card">
-      <span>🔋</span>
-      <h3>Battery Issues</h3>
-      <p>Get help with battery problems.</p>
-    </div>
-    <div class="card">
-      <span>⛽</span>
-      <h3>Fuel Emergency</h3>
-      <p>Request help when you run out of fuel.</p>
-    </div>
-  </div>
 </section>
 
-<section id="about" class="about">
-  <div>
-    <span class="tag">ABOUT ROADRESCUE</span>
-    <h2>Your Journey Matters.</h2>
-    <p>RoadRescue connects drivers with mechanics when they need roadside assistance. Our goal is to make getting help easier and faster.</p>
-    <button onclick="showAuth('signup')">Join RoadRescue →</button>
-  </div>
-  <div class="about-icon">🧰</div>
-</section>
-
-<section id="auth" class="auth hidden">
-  <button class="back" onclick="showHome()">← Back to Home</button>
-
-  <div class="auth-box">
-    <h2 id="auth-title">Login</h2>
-    <p id="auth-desc">Login to continue with RoadRescue.</p>
-
-    <form id="auth-form">
-      <div id="signup-fields" class="hidden">
-        <input id="full-name" placeholder="Full Name">
-        <input id="username" placeholder="Create Username">
-        <input id="signup-email" type="email" placeholder="Email Address">
-        <select id="signup-role">
-          <option value="Driver">Driver Mode</option>
-          <option value="Mechanic">Mechanic Mode</option>
-        </select>
-      </div>
-
-      <div id="login-fields">
-        <input id="login-id" placeholder="Username or Email" required>
-      </div>
-
-      <input id="auth-password" type="password" placeholder="Password" required minlength="4">
-      <button id="auth-submit" type="submit">Login</button>
-    </form>
-
-    <p id="auth-error"></p>
-    <p id="switch-text">
-      New here?
-      <a href="#" onclick="showAuth('signup'); return false;">Create account</a>
-    </p>
-  </div>
-</section>
-
-<section id="dashboard" class="dashboard hidden">
-  <div class="dash-head">
-    <div>👤 <span id="dash-role">Driver Mode</span></div>
-    <div class="dash-user">
-      <span id="dash-name">User</span>
-      <button class="history-btn" onclick="toggleHistory()">History</button>
-      <button class="logout-btn" onclick="logout()">Logout</button>
-    </div>
-  </div>
-
-  <div class="dash-content">
-    <div id="active-section">
-      <h1 id="dash-title">Welcome!</h1>
-      <p id="dash-info">Manage your requests.</p>
-
-      <form id="request-form" class="request-form">
-        <h3>Request Roadside Help</h3>
-
-        <select id="vehicle" required>
-          <option value="">Select Vehicle</option>
-          <option>Car</option>
-          <option>Motorcycle</option>
-          <option>Van</option>
-          <option>Truck</option>
-        </select>
-
-        <select id="issue" required>
-          <option value="">Select Problem</option>
-          <option>Engine Problem</option>
-          <option>Flat Tyre</option>
-          <option>Battery Issue</option>
-          <option>Out of Fuel</option>
-          <option>Other</option>
-        </select>
-
-        <input id="location" placeholder="Enter your location" required>
-        <button type="submit">Request Help</button>
-      </form>
-
-      <h2 class="jobs-title">Active Requests</h2>
-      <div id="jobs"></div>
+<!-- DASHBOARD -->
+<section id="dashboard" class="dashboard-page" style="display:none">
+    <div class="dashboard-banner">
+        <div>
+            <span class="eyebrow">YOUR PERSONAL WORKSPACE</span>
+            <h1 id="welcomeTitle">Welcome back!</h1>
+            <p>Manage your requests and keep your journey moving.</p>
+        </div>
+        <div class="dashboard-banner-icon">🚘</div>
     </div>
 
-    <div id="history-section" class="hidden">
-      <h1>My History</h1>
-      <p>Your completed roadside assistance jobs.</p>
-      <div id="history-jobs"></div>
-      <button onclick="toggleHistory()">← Back to Dashboard</button>
+    <!-- Driver request form -->
+    <div id="driverPanel" class="panel" style="display:none">
+        <div class="panel-heading">
+            <div>
+                <span class="eyebrow">NEW ASSISTANCE REQUEST</span>
+                <h2>Tell us about your vehicle</h2>
+                <p>Choose the options that best match your vehicle and issue.</p>
+            </div>
+            <div class="panel-heading-icon">🔍</div>
+        </div>
+
+        <form id="requestForm" onsubmit="saveRequest(event)">
+            <input type="hidden" id="editingJobId">
+
+            <div class="form-section-title"><span>01</span> Vehicle details</div>
+
+            <div class="form-grid">
+                <div class="field">
+                    <label for="vehicleType">Vehicle type *</label>
+                    <select id="vehicleType" required onchange="updateVehicleOptions()">
+                        <option value="">Select vehicle type</option>
+                        <option value="Car">Car</option>
+                        <option value="Bike">Bike / Motorcycle</option>
+                        <option value="Van">Van</option>
+                        <option value="Truck">Truck</option>
+                        <option value="Bus">Bus</option>
+                        <option value="Rickshaw">Rickshaw</option>
+                        <option value="Other">Other vehicle</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="vehicleCompany">Company / brand *</label>
+                    <select id="vehicleCompany" required onchange="updateModelOptions()">
+                        <option value="">First select vehicle type</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="vehicleModel">Vehicle model *</label>
+                    <select id="vehicleModel" required>
+                        <option value="">First select company</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="vehicleYear">Model year (optional)</label>
+                    <select id="vehicleYear">
+                        <option value="">Select year</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section-title"><span>02</span> What's the problem?</div>
+
+            <div class="form-grid">
+                <div class="field">
+                    <label for="problem">Problem category *</label>
+                    <select id="problem" required onchange="updateProblemDetails()">
+                        <option value="">Select your problem</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="problemDetail">Specific issue *</label>
+                    <select id="problemDetail" required>
+                        <option value="">First select problem category</option>
+                    </select>
+                </div>
+
+                <div class="field full-field">
+                    <label for="location">Your current location *</label>
+                    <input id="location" type="text" placeholder="e.g. Johar Town, Lahore" required>
+                    <small>Enter a nearby area, road or landmark.</small>
+                </div>
+
+                <div class="field full-field">
+                    <label for="extraDetails">Additional details (optional)</label>
+                    <textarea id="extraDetails" rows="3" placeholder="Tell the mechanic anything else that may help..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-primary" id="requestSubmit" type="submit">Submit request ↗</button>
+                <button class="btn btn-outline" id="cancelEdit" type="button" onclick="cancelEdit()" style="display:none">Cancel edit</button>
+            </div>
+            <p id="requestMessage" class="form-message"></p>
+        </form>
     </div>
-  </div>
+
+    <!-- Mechanic panel -->
+    <div id="mechanicPanel" class="panel" style="display:none">
+        <div class="panel-heading">
+            <div>
+                <span class="eyebrow">MECHANIC WORKSPACE</span>
+                <h2>Find a job to help with</h2>
+                <p>Review vehicle details and send a clear price offer.</p>
+            </div>
+            <div class="panel-heading-icon">🛠️</div>
+        </div>
+    </div>
+
+    <!-- Active jobs -->
+    <div class="jobs-header">
+        <div>
+            <span class="eyebrow">YOUR ACTIVITY</span>
+            <h2 id="activeJobsTitle">Active requests</h2>
+        </div>
+        <button class="btn btn-outline" onclick="toggleHistory()">
+            <span id="historyButtonText">View history ↗</span>
+        </button>
+    </div>
+
+    <div id="jobsContainer" class="jobs-grid"></div>
+
+    <section id="historySection" style="display:none">
+        <div class="jobs-header history-heading">
+            <div>
+                <span class="eyebrow">PAST ACTIVITY</span>
+                <h2>Completed job history</h2>
+            </div>
+        </div>
+        <div id="historyContainer" class="jobs-grid"></div>
+    </section>
 </section>
 
-<footer>
-  <a href="#" class="logo">🚘 RoadRescue</a>
-  <p>Making every journey safer, one rescue at a time.</p>
-  <p class="copyright">© 2026 RoadRescue | Developed by <strong>Muhammad Zakria</strong></p>
+<footer class="footer">
+    <a href="#" class="footer-brand" onclick="goHome(); return false;">
+        <span class="brand-logo">R</span>
+        <span>Road<span class="blue-text">Rescue</span></span>
+    </a>
+    <p>Making roadside assistance simpler, one journey at a time.</p>
+    <div class="footer-rule"></div>
+    <small>© 2026 RoadRescue · Developed by <strong>Muhammad Zakria</strong></small>
 </footer>
 
 <script src="script.js"></script>
