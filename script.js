@@ -1,12 +1,11 @@
-// ROADRESCUE - SIMPLE FRONTEND VERSION
+
+ // ROADRESCUE - SIMPLE FRONTEND VERSION
 
 let users = JSON.parse(localStorage.getItem("roadUsers")) || [];
 let requests = JSON.parse(localStorage.getItem("roadRequests")) || [];
 let currentUser = null;
 
-// ----------------------------------
 // VEHICLE OPTIONS
-// ----------------------------------
 
 const vehicleData = {
     Car: {
@@ -148,15 +147,12 @@ const vehicleData = {
     }
 };
 
-// ----------------------------------
-// BASIC PAGE FUNCTIONS
-// ----------------------------------
+// PAGE FUNCTIONS
 
 function hidePages() {
-    document.getElementById("homePage").style.display = "none";
-    document.getElementById("loginPage").style.display = "none";
-    document.getElementById("signupPage").style.display = "none";
-    document.getElementById("dashboard").style.display = "none";
+    ["homePage", "loginPage", "signupPage", "dashboard"].forEach(function(id) {
+        document.getElementById(id).style.display = "none";
+    });
 }
 
 function goHome() {
@@ -185,9 +181,7 @@ function showSignup() {
     window.scrollTo(0, 0);
 }
 
-// ----------------------------------
-// SIDEBAR AND PROFILE MENU
-// ----------------------------------
+// SIDEBAR
 
 function toggleMenu() {
     document.getElementById("sidebar").classList.toggle("open");
@@ -206,7 +200,6 @@ function updateMenu() {
     if (currentUser) {
         guestMenu.style.display = "none";
         profileMenu.style.display = "block";
-
         document.getElementById("sidebarName").textContent = currentUser.name;
         document.getElementById("sidebarRole").textContent = currentUser.role;
         document.getElementById("sidebarAvatar").textContent =
@@ -223,21 +216,19 @@ function startHelp() {
         return;
     }
 
+    showDashboard();
+
     if (currentUser.role === "Driver") {
-        showDashboard();
         document.getElementById("driverPanel").scrollIntoView({
             behavior: "smooth",
             block: "start"
         });
     } else {
-        showDashboard();
         alert("You are logged in as a mechanic. You can review requests below.");
     }
 }
 
-// ----------------------------------
 // SIGNUP
-// ----------------------------------
 
 function signup(event) {
     event.preventDefault();
@@ -257,7 +248,7 @@ function signup(event) {
     }
 
     if (password.length < 4) {
-        message.textContent = "For this demo, use a password of at least 4 characters.";
+        message.textContent = "Password must be at least 4 characters.";
         return;
     }
 
@@ -271,14 +262,7 @@ function signup(event) {
         return;
     }
 
-    users.push({
-        name: name,
-        username: username,
-        email: email,
-        password: password,
-        role: role
-    });
-
+    users.push({ name, username, email, password, role });
     localStorage.setItem("roadUsers", JSON.stringify(users));
 
     event.target.reset();
@@ -287,9 +271,7 @@ function signup(event) {
         "Account created successfully. Please log in.";
 }
 
-// ----------------------------------
 // LOGIN
-// ----------------------------------
 
 function login(event) {
     event.preventDefault();
@@ -298,14 +280,10 @@ function login(event) {
     const password = document.getElementById("loginPassword").value;
     const message = document.getElementById("loginMessage");
 
-    message.textContent = "";
-
     const matchedUser = users.find(function(user) {
-        return (
-            (user.username.toLowerCase() === identity ||
-             user.email.toLowerCase() === identity) &&
-            user.password === password
-        );
+        return (user.username.toLowerCase() === identity ||
+                user.email.toLowerCase() === identity) &&
+                user.password === password;
     });
 
     if (!matchedUser) {
@@ -318,9 +296,7 @@ function login(event) {
     showDashboard();
 }
 
-// ----------------------------------
 // DASHBOARD
-// ----------------------------------
 
 function showDashboard() {
     if (!currentUser) {
@@ -329,7 +305,6 @@ function showDashboard() {
     }
 
     hidePages();
-
     document.getElementById("dashboard").style.display = "block";
     document.getElementById("welcomeTitle").textContent =
         "Welcome, " + currentUser.name + "!";
@@ -358,13 +333,17 @@ function logout() {
     goHome();
 }
 
-// ----------------------------------
-// POPULATE MODEL YEARS
-// ----------------------------------
+// FIXED: POPULATE MODEL YEARS
 
 function populateYears() {
     const yearSelect = document.getElementById("vehicleYear");
+
+    if (!yearSelect) {
+        return;
+    }
+
     const currentYear = new Date().getFullYear();
+    yearSelect.innerHTML = '<option value="">Select year</option>';
 
     for (let year = currentYear; year >= 1980; year--) {
         const option = document.createElement("option");
@@ -374,9 +353,7 @@ function populateYears() {
     }
 }
 
-// ----------------------------------
 // VEHICLE TYPE -> COMPANY -> MODEL
-// ----------------------------------
 
 function updateVehicleOptions() {
     const type = document.getElementById("vehicleType").value;
@@ -390,13 +367,9 @@ function updateVehicleOptions() {
     problemSelect.innerHTML = '<option value="">Select your problem</option>';
     detailSelect.innerHTML = '<option value="">First select problem category</option>';
 
-    if (!type || !vehicleData[type]) {
-        return;
-    }
+    if (!type || !vehicleData[type]) return;
 
-    const companies = vehicleData[type].companies;
-
-    Object.keys(companies).forEach(function(company) {
+    Object.keys(vehicleData[type].companies).forEach(function(company) {
         const option = document.createElement("option");
         option.value = company;
         option.textContent = company;
@@ -418,9 +391,7 @@ function updateModelOptions() {
 
     modelSelect.innerHTML = '<option value="">Select model</option>';
 
-    if (!type || !company || !vehicleData[type]) {
-        return;
-    }
+    if (!type || !company || !vehicleData[type]) return;
 
     const models = vehicleData[type].companies[company] || ["Other model"];
 
@@ -439,9 +410,7 @@ function updateProblemDetails() {
 
     detailSelect.innerHTML = '<option value="">Select specific issue</option>';
 
-    if (!type || !problem || !vehicleData[type]) {
-        return;
-    }
+    if (!type || !problem || !vehicleData[type]) return;
 
     const details = vehicleData[type].problems[problem] || ["Other issue"];
 
@@ -453,19 +422,14 @@ function updateProblemDetails() {
     });
 }
 
-// ----------------------------------
 // CREATE OR EDIT REQUEST
-// ----------------------------------
 
 function saveRequest(event) {
     event.preventDefault();
 
-    if (!currentUser || currentUser.role !== "Driver") {
-        return;
-    }
+    if (!currentUser || currentUser.role !== "Driver") return;
 
     const editingId = document.getElementById("editingJobId").value;
-
     const vehicleType = document.getElementById("vehicleType").value;
     const company = document.getElementById("vehicleCompany").value;
     const model = document.getElementById("vehicleModel").value;
@@ -474,16 +438,15 @@ function saveRequest(event) {
     const problemDetail = document.getElementById("problemDetail").value;
     const location = document.getElementById("location").value.trim();
     const extraDetails = document.getElementById("extraDetails").value.trim();
+    const message = document.getElementById("requestMessage");
 
     if (!vehicleType || !company || !model || !problem ||
         !problemDetail || !location) {
-        document.getElementById("requestMessage").textContent =
-            "Please complete all required fields.";
+        message.textContent = "Please complete all required fields.";
         return;
     }
 
     const vehicleName = [year, company, model].filter(Boolean).join(" ");
-    const message = document.getElementById("requestMessage");
 
     if (editingId) {
         const job = requests.find(function(item) {
@@ -492,56 +455,43 @@ function saveRequest(event) {
         });
 
         if (!job || job.status !== "Waiting for mechanic") {
-            message.textContent =
-                "This request can no longer be edited because a mechanic has responded.";
+            message.textContent = "This request can no longer be edited.";
             return;
         }
 
-        job.vehicleType = vehicleType;
-        job.company = company;
-        job.model = model;
-        job.year = year;
-        job.vehicle = vehicleName;
-        job.issue = problem;
-        job.problemDetail = problemDetail;
-        job.location = location;
-        job.extraDetails = extraDetails;
-        job.updatedDate = new Date().toLocaleString();
+        Object.assign(job, {
+            vehicleType, company, model, year,
+            vehicle: vehicleName, issue: problem,
+            problemDetail, location, extraDetails,
+            updatedDate: new Date().toLocaleString()
+        });
 
         saveRequests();
         resetRequestForm();
         renderJobs();
-
         message.textContent = "Your request has been updated.";
         return;
     }
 
-    const job = {
+    requests.push({
         id: Date.now(),
         driver: currentUser.name,
         driverEmail: currentUser.email,
-        vehicleType: vehicleType,
-        company: company,
-        model: model,
-        year: year,
+        vehicleType, company, model, year,
         vehicle: vehicleName,
         issue: problem,
-        problemDetail: problemDetail,
-        location: location,
-        extraDetails: extraDetails,
+        problemDetail, location, extraDetails,
         mechanic: "",
         mechanicEmail: "",
         price: 0,
         status: "Waiting for mechanic",
         date: new Date().toLocaleString(),
         updatedDate: ""
-    };
+    });
 
-    requests.push(job);
     saveRequests();
     resetRequestForm();
     renderJobs();
-
     message.textContent = "Your roadside assistance request has been submitted.";
 }
 
@@ -563,16 +513,12 @@ function resetRequestForm() {
         '<option value="">Select your problem</option>';
     document.getElementById("problemDetail").innerHTML =
         '<option value="">First select problem category</option>';
+    populateYears();
 }
-
-// ----------------------------------
-// EDIT A DRIVER REQUEST
-// ----------------------------------
 
 function editRequest(id) {
     const job = requests.find(function(item) {
-        return item.id === id &&
-               item.driverEmail === currentUser.email;
+        return item.id === id && item.driverEmail === currentUser.email;
     });
 
     if (!job || job.status !== "Waiting for mechanic") {
@@ -581,19 +527,16 @@ function editRequest(id) {
     }
 
     document.getElementById("editingJobId").value = job.id;
-
     document.getElementById("vehicleType").value = job.vehicleType;
     updateVehicleOptions();
 
     document.getElementById("vehicleCompany").value = job.company;
     updateModelOptions();
-
     document.getElementById("vehicleModel").value = job.model;
     document.getElementById("vehicleYear").value = job.year || "";
 
     document.getElementById("problem").value = job.issue;
     updateProblemDetails();
-
     document.getElementById("problemDetail").value = job.problemDetail;
     document.getElementById("location").value = job.location;
     document.getElementById("extraDetails").value = job.extraDetails || "";
@@ -614,22 +557,16 @@ function cancelEdit() {
     document.getElementById("requestMessage").textContent = "";
 }
 
-// ----------------------------------
-// DISPLAY JOB CARDS
-// ----------------------------------
+// DISPLAY JOBS
 
 function renderJobs() {
-    if (!currentUser) {
-        return;
-    }
+    if (!currentUser) return;
 
     const container = document.getElementById("jobsContainer");
     container.innerHTML = "";
 
-    let visibleJobs = requests.filter(function(job) {
-        if (job.status === "Completed" || job.status === "Rejected") {
-            return false;
-        }
+    const visibleJobs = requests.filter(function(job) {
+        if (job.status === "Completed" || job.status === "Rejected") return false;
 
         if (currentUser.role === "Driver") {
             return job.driverEmail === currentUser.email;
@@ -637,9 +574,7 @@ function renderJobs() {
 
         return job.status === "Waiting for mechanic" ||
                job.mechanicEmail === currentUser.email;
-    });
-
-    visibleJobs.sort(function(a, b) {
+    }).sort(function(a, b) {
         return b.id - a.id;
     });
 
@@ -686,18 +621,16 @@ function renderJobs() {
                     <div class="job-actions">
                         <button class="edit-btn" onclick="editRequest(${job.id})">Edit request ✎</button>
                         <button class="reject-btn" onclick="cancelRequest(${job.id})">Cancel request</button>
-                    </div>
-                `;
+                    </div>`;
             } else if (job.status === "Price offered to driver") {
                 html += `
-                    <p>A mechanic has sent a price offer. Review it below.</p>
+                    <p>A mechanic has sent a price offer.</p>
                     <div class="job-actions">
                         <button class="accept-btn" onclick="acceptPrice(${job.id})">Accept price ✓</button>
                         <button class="reject-btn" onclick="rejectPrice(${job.id})">Reject offer</button>
-                    </div>
-                `;
+                    </div>`;
             } else if (job.status === "Mechanic is on the way") {
-                html += `<p><strong>✓ Your mechanic is on the way!</strong></p>`;
+                html += "<p><strong>✓ Your mechanic is on the way!</strong></p>";
             }
         }
 
@@ -705,24 +638,19 @@ function renderJobs() {
             if (job.status === "Waiting for mechanic") {
                 html += `
                     <label for="price-${job.id}">Your service price (PKR)</label>
-                    <input type="number" id="price-${job.id}" min="1" step="1"
-                        placeholder="Enter your price">
+                    <input type="number" id="price-${job.id}" min="1" step="1" placeholder="Enter your price">
                     <div class="job-actions">
                         <button onclick="sendPrice(${job.id})">Send price offer ↗</button>
-                    </div>
-                `;
+                    </div>`;
             } else if (job.mechanicEmail === currentUser.email &&
                        job.status === "Price offered to driver") {
-                html += `<p>Waiting for the driver to accept or reject your offer.</p>`;
+                html += "<p>Waiting for the driver to accept or reject your offer.</p>";
             } else if (job.mechanicEmail === currentUser.email &&
                        job.status === "Mechanic is on the way") {
                 html += `
                     <div class="job-actions">
-                        <button class="complete-btn" onclick="completeJob(${job.id})">
-                            Mark job completed ✓
-                        </button>
-                    </div>
-                `;
+                        <button class="complete-btn" onclick="completeJob(${job.id})">Mark job completed ✓</button>
+                    </div>`;
             }
         }
 
@@ -743,24 +671,19 @@ function escapeHTML(value) {
     });
 }
 
-// ----------------------------------
-// DRIVER CANCELS A REQUEST
-// ----------------------------------
+// CANCEL REQUEST
 
 function cancelRequest(id) {
     const job = requests.find(function(item) {
-        return item.id === id &&
-               item.driverEmail === currentUser.email;
+        return item.id === id && item.driverEmail === currentUser.email;
     });
 
     if (!job || job.status !== "Waiting for mechanic") {
-        alert("This request can no longer be cancelled here.");
+        alert("This request can no longer be cancelled.");
         return;
     }
 
-    if (!confirm("Are you sure you want to cancel this request?")) {
-        return;
-    }
+    if (!confirm("Are you sure you want to cancel this request?")) return;
 
     requests = requests.filter(function(item) {
         return item.id !== id;
@@ -770,9 +693,7 @@ function cancelRequest(id) {
     renderJobs();
 }
 
-// ----------------------------------
-// MECHANIC SENDS A PRICE OFFER
-// ----------------------------------
+// MECHANIC SENDS PRICE
 
 function sendPrice(id) {
     const job = requests.find(function(item) {
@@ -785,8 +706,7 @@ function sendPrice(id) {
         return;
     }
 
-    const input = document.getElementById("price-" + id);
-    const price = Number(input.value);
+    const price = Number(document.getElementById("price-" + id).value);
 
     if (!Number.isFinite(price) || price <= 0) {
         alert("Please enter a valid price greater than zero.");
@@ -803,14 +723,9 @@ function sendPrice(id) {
     alert("Price offer sent to the driver!");
 }
 
-// ----------------------------------
-// DRIVER ACCEPTS OR REJECTS
-// ----------------------------------
-
 function acceptPrice(id) {
     const job = requests.find(function(item) {
-        return item.id === id &&
-               item.driverEmail === currentUser.email;
+        return item.id === id && item.driverEmail === currentUser.email;
     });
 
     if (!job || job.status !== "Price offered to driver") {
@@ -820,7 +735,6 @@ function acceptPrice(id) {
     }
 
     job.status = "Mechanic is on the way";
-
     saveRequests();
     renderJobs();
     alert("Price accepted! Mechanic is on the way.");
@@ -828,8 +742,7 @@ function acceptPrice(id) {
 
 function rejectPrice(id) {
     const job = requests.find(function(item) {
-        return item.id === id &&
-               item.driverEmail === currentUser.email;
+        return item.id === id && item.driverEmail === currentUser.email;
     });
 
     if (!job || job.status !== "Price offered to driver") {
@@ -844,14 +757,11 @@ function rejectPrice(id) {
     alert("Price offer rejected.");
 }
 
-// ----------------------------------
-// MECHANIC COMPLETES JOB
-// ----------------------------------
+// COMPLETE JOB
 
 function completeJob(id) {
     const job = requests.find(function(item) {
-        return item.id === id &&
-               item.mechanicEmail === currentUser.email;
+        return item.id === id && item.mechanicEmail === currentUser.email;
     });
 
     if (!job || job.status !== "Mechanic is on the way") {
@@ -860,9 +770,7 @@ function completeJob(id) {
         return;
     }
 
-    if (!confirm("Confirm that this job has been completed?")) {
-        return;
-    }
+    if (!confirm("Confirm that this job has been completed?")) return;
 
     job.status = "Completed";
     job.completedDate = new Date().toLocaleString();
@@ -877,9 +785,7 @@ function completeJob(id) {
     alert("Job completed and moved to history.");
 }
 
-// ----------------------------------
 // HISTORY
-// ----------------------------------
 
 function toggleHistory() {
     const section = document.getElementById("historySection");
@@ -889,11 +795,7 @@ function toggleHistory() {
         section.style.display = "block";
         buttonText.textContent = "Hide history ↑";
         renderHistory();
-
-        section.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
     } else {
         section.style.display = "none";
         buttonText.textContent = "View history ↗";
@@ -905,18 +807,14 @@ function renderHistory() {
     container.innerHTML = "";
 
     const completedJobs = requests.filter(function(job) {
-        if (job.status !== "Completed") {
-            return false;
-        }
+        if (job.status !== "Completed") return false;
 
         if (currentUser.role === "Driver") {
             return job.driverEmail === currentUser.email;
         }
 
         return job.mechanicEmail === currentUser.email;
-    });
-
-    completedJobs.sort(function(a, b) {
+    }).sort(function(a, b) {
         return b.id - a.id;
     });
 
@@ -943,11 +841,18 @@ function renderHistory() {
 
         container.appendChild(card);
     });
+}
 
-// ----------------------------------
 // INITIAL SETUP
-// ----------------------------------
 
-populateYears();
-updateMenu();
-goHome();}
+function initializeRoadRescue() {
+    populateYears();
+    updateMenu();
+    goHome();
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeRoadRescue);
+} else {
+    initializeRoadRescue();
+}
